@@ -7,6 +7,7 @@ import { CharacterListItem } from '../components/character-list-screen/Character
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CharacterStackParamList } from '../../App';
 import { ICharacter } from '../models/character.model';
+import { COLORS } from '../constants/colors';
 
 const INITIAL_CHARACTERS_PAGE = 1;
 
@@ -40,7 +41,7 @@ export const CharacterListScreen: React.FC<
   }, []);
 
   return (
-    <View>
+    <View style={{ backgroundColor: COLORS.offWhite }}>
       <FlatList
         data={data?.characters.results}
         renderItem={({ item }) => (
@@ -50,7 +51,7 @@ export const CharacterListScreen: React.FC<
           />
         )}
         contentInsetAdjustmentBehavior="automatic"
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={1}
         onEndReached={onEndReached}
       />
     </View>

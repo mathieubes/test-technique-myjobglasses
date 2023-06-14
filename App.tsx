@@ -2,41 +2,37 @@ import { StatusBar } from 'expo-status-bar';
 import { CharacterListScreen } from './src/screens/CharacterListScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { ApiProvider } from './src/Api';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationOptions,
+  createNativeStackNavigator,
+} from '@react-navigation/native-stack';
 import { CharacterDetailScreen } from './src/screens/CharacterDetailScreen';
 import { ICharacter } from './src/models/character.model';
+import { COLORS } from './src/constants/colors';
 
 export type CharacterStackParamList = {
   CharacterList: undefined;
   CharacterDetail: { character: ICharacter };
 };
 
-const Stack = createNativeStackNavigator<CharacterStackParamList>();
+const CharacterStack = createNativeStackNavigator<CharacterStackParamList>();
 
 export const App = () => {
   return (
     <ApiProvider>
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerLargeTitle: true,
-          }}
-        >
-          <Stack.Screen
+        <CharacterStack.Navigator screenOptions={characterStackStyles.global}>
+          <CharacterStack.Screen
             name="CharacterList"
             component={CharacterListScreen}
-            options={{ title: 'Characters' }}
+            options={characterStackStyles.characterList}
           />
-          <Stack.Screen
+          <CharacterStack.Screen
             name="CharacterDetail"
             component={CharacterDetailScreen}
-            options={{
-              headerTitle: '',
-              headerLargeTitle: false,
-              headerTransparent: true,
-            }}
+            options={({ route }) => ({ title: route.params.character.name })}
           />
-        </Stack.Navigator>
+        </CharacterStack.Navigator>
       </NavigationContainer>
 
       <StatusBar style="auto" />
@@ -45,3 +41,19 @@ export const App = () => {
 };
 
 export default App;
+
+const characterStackStyles: { [key: string]: NativeStackNavigationOptions } = {
+  global: {
+    headerStyle: { backgroundColor: COLORS.offWhite },
+    headerTintColor: COLORS.primary,
+    headerTitleStyle: { color: COLORS.dark },
+    headerBackTitleVisible: false,
+    headerLargeTitle: true,
+    headerLargeTitleShadowVisible: false,
+    headerLargeStyle: { backgroundColor: COLORS.offWhite },
+    headerLargeTitleStyle: { color: COLORS.dark },
+  },
+  characterList: {
+    title: 'Characters',
+  },
+};

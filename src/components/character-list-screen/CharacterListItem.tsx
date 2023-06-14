@@ -1,8 +1,10 @@
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { ICharacter } from '../../models/character.model';
+import { CharacterGender, ICharacter } from '../../models/character.model';
 import { COLORS } from '../../constants/colors';
 import { useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { getGenderIconName } from '../../utils/icons.utils';
+import { GenderBadge } from '../badges/GenderBadge';
 
 type Props = ICharacter & {
   navigationCallback: (character: ICharacter) => void;
@@ -14,19 +16,6 @@ export const CharacterListItem: React.FC<Props> = ({
 }) => {
   const { image, name, gender } = character;
   const [firstName, ...rest] = name!.split(' ');
-
-  const getGenderStyle = useCallback(() => {
-    switch (gender) {
-      case 'Male':
-        return styles.characterCard__content__gender_male;
-      case 'Female':
-        return styles.characterCard__content__gender_female;
-      case 'Genderless':
-        return styles.characterCard__content__gender_genderless;
-      default:
-        return null;
-    }
-  }, [gender]);
 
   return (
     <TouchableOpacity
@@ -44,11 +33,7 @@ export const CharacterListItem: React.FC<Props> = ({
           </Text>
         </View>
 
-        <View style={[styles.characterCard__content__gender, getGenderStyle()]}>
-          <Text style={styles.characterCard__content__gender__text}>
-            {gender}
-          </Text>
-        </View>
+        <GenderBadge gender={gender!} />
       </View>
 
       <Ionicons
@@ -85,26 +70,6 @@ const styles = StyleSheet.create({
   },
   characterCard__content__lastName: {
     fontSize: 16,
-    textTransform: 'uppercase',
-  },
-  characterCard__content__gender: {
-    padding: 8,
-    alignSelf: 'flex-start',
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 8,
-  },
-  characterCard__content__gender_male: {
-    backgroundColor: COLORS.green,
-  },
-  characterCard__content__gender_female: {
-    backgroundColor: COLORS.red,
-  },
-  characterCard__content__gender_genderless: {
-    backgroundColor: COLORS.blue,
-  },
-  characterCard__content__gender__text: {
-    fontSize: 10,
-    fontWeight: '600',
     textTransform: 'uppercase',
   },
   characterCard__chevronRight: {

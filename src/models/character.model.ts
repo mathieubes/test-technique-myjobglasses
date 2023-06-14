@@ -1,5 +1,7 @@
+import { IEpisode } from './episode.model';
+
 type CharacterStatus = 'Alive' | 'Dead' | 'unknown';
-type CharacterGender = 'Female' | 'Male' | 'Genderless' | 'unknown';
+export type CharacterGender = 'Female' | 'Male' | 'Genderless' | 'unknown';
 
 interface ILocation {
   name: string;
@@ -16,7 +18,7 @@ export interface ICharacter {
   origin?: ILocation;
   location?: ILocation;
   image?: string;
-  episode?: string[];
+  episode?: IEpisode[];
   url?: string;
   created?: string;
 }
