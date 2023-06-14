@@ -1,14 +1,18 @@
-import { View, Image, Text, StyleSheet } from 'react-native';
+import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { ICharacter } from '../../models/character.model';
 import { COLORS } from '../../constants/colors';
 import { useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
-export const CharacterListItem: React.FC<ICharacter> = ({
-  image,
-  name,
-  gender,
+type Props = ICharacter & {
+  navigationCallback: (character: ICharacter) => void;
+};
+
+export const CharacterListItem: React.FC<Props> = ({
+  navigationCallback,
+  ...character
 }) => {
+  const { image, name, gender } = character;
   const [firstName, ...rest] = name!.split(' ');
 
   const getGenderStyle = useCallback(() => {
@@ -25,7 +29,10 @@ export const CharacterListItem: React.FC<ICharacter> = ({
   }, [gender]);
 
   return (
-    <View style={styles.characterCard}>
+    <TouchableOpacity
+      style={styles.characterCard}
+      onPress={() => navigationCallback(character)}
+    >
       <Image style={styles.characterCard__avatar} source={{ uri: image }} />
       <View style={styles.characterCard__content}>
         <View>
@@ -49,7 +56,7 @@ export const CharacterListItem: React.FC<ICharacter> = ({
         name="chevron-forward"
         size={18}
       />
-    </View>
+    </TouchableOpacity>
   );
 };
 

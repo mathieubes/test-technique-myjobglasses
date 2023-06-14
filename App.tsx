@@ -3,9 +3,15 @@ import { CharacterListScreen } from './src/screens/CharacterListScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { ApiProvider } from './src/Api';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { COLORS } from './src/constants/colors';
+import { CharacterDetailScreen } from './src/screens/CharacterDetailScreen';
+import { ICharacter } from './src/models/character.model';
 
-const Stack = createNativeStackNavigator();
+export type CharacterStackParamList = {
+  CharacterList: undefined;
+  CharacterDetail: { character: ICharacter };
+};
+
+const Stack = createNativeStackNavigator<CharacterStackParamList>();
 
 export const App = () => {
   return (
@@ -20,6 +26,15 @@ export const App = () => {
             name="CharacterList"
             component={CharacterListScreen}
             options={{ title: 'Characters' }}
+          />
+          <Stack.Screen
+            name="CharacterDetail"
+            component={CharacterDetailScreen}
+            options={{
+              headerTitle: '',
+              headerLargeTitle: false,
+              headerTransparent: true,
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
