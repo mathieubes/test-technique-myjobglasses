@@ -4,12 +4,12 @@ import { CharacterStackParamList } from '../../App';
 import { COLORS } from '../constants/colors';
 import { GenderBadge } from '../components/badges/GenderBadge';
 import { useQuery } from '@apollo/client';
-import { ICharacter } from '../models/character.model';
 import { GET_FULL_CHARACTER } from '../queries/character.graphql';
 import { ISingleCharacterQuery } from '../models/queries/single-character-query.model';
 import { useEffect, useState } from 'react';
 import { Badge } from '../components/badges/Badge';
 import { generateRandomPhoneNumberForRick } from '../utils/string.utils';
+import { Episode } from '../components/character-detail-screen/Episode';
 
 export const CharacterDetailScreen: React.FC<
   NativeStackScreenProps<CharacterStackParamList, 'CharacterDetail'>
@@ -78,6 +78,11 @@ export const CharacterDetailScreen: React.FC<
           </View>
         )}
       </View>
+
+      <Text style={styles.screen__episodes}>Episodes</Text>
+      {character.episode?.map((episode) => {
+        return <Episode key={episode.episode} {...episode} />;
+      })}
     </ScrollView>
   );
 };
@@ -93,7 +98,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   screen__moreInfos: {
-    padding: 32,
+    paddingVertical: 32,
+    paddingHorizontal: 8,
     rowGap: 16,
   },
   screen__moreInfos__row: {
@@ -113,5 +119,11 @@ const styles = StyleSheet.create({
   },
   screen__moreInfos__row__phone: {
     backgroundColor: COLORS.pink,
+  },
+  screen__episodes: {
+    marginVertical: 16,
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: COLORS.dark,
   },
 });
