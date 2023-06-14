@@ -22,9 +22,6 @@ export const GET_FULL_CHARACTER = gql`
       status
       species
       type
-      origin {
-        name
-      }
       location {
         name
       }
