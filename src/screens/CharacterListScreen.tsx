@@ -8,11 +8,27 @@ import { CharacterListItem } from '../components/character-list-screen/Character
 const INITIAL_CHARACTERS_PAGE = 1;
 
 export const CharacterListScreen = () => {
-  const [currentPage, setCurrentPage] = useState(INITIAL_CHARACTERS_PAGE);
-
-  const { data } = useQuery<ICharactersQuery>(GET_CHARACTERS, {
-    variables: { page: currentPage },
+  const { data, fetchMore } = useQuery<ICharactersQuery>(GET_CHARACTERS, {
+    variables: { page: INITIAL_CHARACTERS_PAGE },
   });
+
+  const onReachedFetching = () => {
+    fetchMore({
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult.characters || !prev.characters) return data!;
+
+        fetchMoreResult.characters.results = [
+          ...prev.characters.results,
+          ...fetchMoreResult.characters.results,
+        ];
+
+        return {
+          ...fetchMoreResult,
+        };
+      },
+      variables: { page: data?.characters.info.next },
+    });
+  };
 
   return (
     <View>
@@ -21,6 +37,8 @@ export const CharacterListScreen = () => {
         renderItem={({ item }) => <CharacterListItem {...item} />}
         ListFooterComponent={() => <Text>FOOTER</Text>}
         contentInsetAdjustmentBehavior="automatic"
+        onEndReachedThreshold={0.5}
+        onEndReached={onReachedFetching}
       />
     </View>
   );
