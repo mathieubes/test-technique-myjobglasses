@@ -29,17 +29,14 @@ export const CharacterListScreen: React.FC<
   NativeStackScreenProps<CharacterStackParamList, 'CharacterList'>
 > = ({ navigation }) => {
   const { nameFilter, genderFilter, statusFilter } = useContext(FilterContext);
-  const { data, fetchMore, refetch } = useQuery<ICharactersQuery>(
-    GET_CHARACTERS,
-    {
-      variables: {
-        page: INITIAL_CHARACTERS_PAGE,
-        name: nameFilter,
-        gender: genderFilter,
-        status: statusFilter,
-      },
-    }
-  );
+  const { data, fetchMore } = useQuery<ICharactersQuery>(GET_CHARACTERS, {
+    variables: {
+      page: INITIAL_CHARACTERS_PAGE,
+      name: nameFilter,
+      gender: genderFilter,
+      status: statusFilter,
+    },
+  });
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['40%'], []);
