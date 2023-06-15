@@ -11,7 +11,7 @@ import { CharacterStackParamList } from '../navigation/DefaultCharacterNavigatio
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export const CharacterListFavoriteScreen: React.FC<
-  NativeStackScreenProps<CharacterStackParamList, 'CharacterList'>
+  NativeStackScreenProps<CharacterStackParamList>
 > = ({ navigation }) => {
   const { favorites } = useContext(FavoriteContext);
 
