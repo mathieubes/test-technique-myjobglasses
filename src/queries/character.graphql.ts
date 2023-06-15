@@ -24,6 +24,17 @@ export const GET_CHARACTERS = gql`
   }
 `;
 
+export const GET_CHARACTERS_BY_IDS = gql`
+  query GetCharactersByIDs($ids: [ID!]!) {
+    charactersByIds(ids: $ids) {
+      id
+      image
+      name
+      gender
+    }
+  }
+`;
+
 export const GET_FULL_CHARACTER = gql`
   query GetFullCharacter($id: ID!) {
     character(id: $id) {

@@ -1,19 +1,23 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
-import { CharacterStackParamList } from '../../App';
 import { COLORS } from '../constants/colors';
 import { GenderBadge } from '../components/badges/GenderBadge';
 import { useQuery } from '@apollo/client';
 import { GET_FULL_CHARACTER } from '../queries/character.graphql';
 import { ISingleCharacterQuery } from '../models/queries/single-character-query.model';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Badge } from '../components/badges/Badge';
 import { generateRandomPhoneNumberForRick } from '../utils/string.utils';
 import { Episode } from '../components/character-detail-screen/Episode';
+import { CharacterStackParamList } from '../navigation/DefaultCharacterNavigation';
+import { Button } from '../components/Button';
+import { FavoriteContext } from '../contexts/FavoriteContext';
 
 export const CharacterDetailScreen: React.FC<
   NativeStackScreenProps<CharacterStackParamList, 'CharacterDetail'>
 > = ({ route }) => {
+  const { addFavorite, removeFavorite, isFavorite } =
+    useContext(FavoriteContext);
   const [character, setCharacter] = useState(route.params.character);
 
   const { data } = useQuery<ISingleCharacterQuery>(GET_FULL_CHARACTER, {
@@ -22,7 +26,6 @@ export const CharacterDetailScreen: React.FC<
 
   useEffect(() => {
     if (!data) return;
-    console.log(data);
     setCharacter({
       ...character,
       ...data.character,
@@ -30,8 +33,6 @@ export const CharacterDetailScreen: React.FC<
   }, [data]);
 
   const { id, image, gender, status, species, location } = character;
-
-  console.log(id);
 
   return (
     <ScrollView
@@ -78,6 +79,15 @@ export const CharacterDetailScreen: React.FC<
           </View>
         )}
       </View>
+
+      <Button
+        iconName="heart-outline"
+        text={`${isFavorite!(id!) ? 'Remove from' : 'Add to'} favorite`}
+        style={isFavorite!(id!) && { backgroundColor: COLORS.red }}
+        onPress={() =>
+          isFavorite!(id!) ? removeFavorite!(id!) : addFavorite!(id!)
+        }
+      />
 
       <Text style={styles.screen__episodes}>Episodes</Text>
       {character.episode?.map((episode) => {

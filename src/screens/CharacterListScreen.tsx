@@ -13,7 +13,6 @@ import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { ICharactersQuery } from '../models/queries/characters-query.model';
 import { CharacterListItem } from '../components/character-list-screen/CharacterListItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { CharacterStackParamList } from '../../App';
 import { ICharacter } from '../models/character.model';
 import { COLORS } from '../constants/colors';
 import { FiltersButton } from '../components/FiltersButton';
@@ -22,6 +21,7 @@ import { CharacterListFilterModal } from './CharacterListFilterModal';
 import { FilterContext } from '../contexts/FilterContext';
 import { Badge } from '../components/badges/Badge';
 import { Button } from '../components/Button';
+import { CharacterStackParamList } from '../navigation/DefaultCharacterNavigation';
 
 const INITIAL_CHARACTERS_PAGE = 1;
 

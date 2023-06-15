@@ -7,7 +7,7 @@ import { getGenderIconName } from '../../utils/icons.utils';
 import { GenderBadge } from '../badges/GenderBadge';
 
 type Props = ICharacter & {
-  navigationCallback: (character: ICharacter) => void;
+  navigationCallback?: (character: ICharacter) => void;
 };
 
 export const CharacterListItem: React.FC<Props> = ({
@@ -20,7 +20,7 @@ export const CharacterListItem: React.FC<Props> = ({
   return (
     <TouchableOpacity
       style={styles.characterCard}
-      onPress={() => navigationCallback(character)}
+      onPress={navigationCallback && (() => navigationCallback(character))}
     >
       <Image style={styles.characterCard__avatar} source={{ uri: image }} />
       <View style={styles.characterCard__content}>
@@ -36,11 +36,13 @@ export const CharacterListItem: React.FC<Props> = ({
         <GenderBadge gender={gender!} />
       </View>
 
-      <Ionicons
-        style={styles.characterCard__chevronRight}
-        name="chevron-forward"
-        size={18}
-      />
+      {navigationCallback && (
+        <Ionicons
+          style={styles.characterCard__chevronRight}
+          name="chevron-forward"
+          size={18}
+        />
+      )}
     </TouchableOpacity>
   );
 };

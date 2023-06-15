@@ -1,73 +1,40 @@
 import { StatusBar } from 'expo-status-bar';
-import { CharacterListScreen } from './src/screens/CharacterListScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { ApiProvider } from './src/Api';
-import {
-  NativeStackNavigationOptions,
-  createNativeStackNavigator,
-} from '@react-navigation/native-stack';
-import { CharacterDetailScreen } from './src/screens/CharacterDetailScreen';
-import { ICharacter } from './src/models/character.model';
-import { COLORS } from './src/constants/colors';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import {
-  FilterContext,
-  FilterContextProvider,
-} from './src/contexts/FilterContext';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { DefaultCharacterNavigation } from './src/navigation/DefaultCharacterNavigation';
+import { CharacterListFavoriteScreen } from './src/screens/CharacterListFavoriteScreen';
+import { FavoriteContextProvider } from './src/contexts/FavoriteContext';
+import { COLORS } from './src/constants/colors';
 
-export type CharacterStackParamList = {
-  CharacterList: undefined;
-  CharacterDetail: { character: ICharacter };
-};
-
-const CharacterStack = createNativeStackNavigator<CharacterStackParamList>();
+const BottomTab = createBottomTabNavigator();
 
 export const App = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ApiProvider>
-        <FilterContextProvider>
+        <FavoriteContextProvider>
           <NavigationContainer>
-            <CharacterStack.Navigator
-              screenOptions={characterStackStyles.global}
-            >
-              <CharacterStack.Screen
-                name="CharacterList"
-                component={CharacterListScreen}
-                options={characterStackStyles.characterList}
+            <BottomTab.Navigator>
+              <BottomTab.Screen
+                name="CharacterListTab"
+                component={DefaultCharacterNavigation}
+                options={{ headerShown: false }}
               />
 
-              <CharacterStack.Screen
-                name="CharacterDetail"
-                component={CharacterDetailScreen}
-                options={({ route }) => ({
-                  title: route.params.character.name,
-                })}
+              <BottomTab.Screen
+                name="CharacterFavoriteTab"
+                component={CharacterListFavoriteScreen}
               />
-            </CharacterStack.Navigator>
+            </BottomTab.Navigator>
           </NavigationContainer>
-        </FilterContextProvider>
 
-        <StatusBar style="auto" />
+          <StatusBar style="auto" />
+        </FavoriteContextProvider>
       </ApiProvider>
     </GestureHandlerRootView>
   );
 };
 
 export default App;
-
-const characterStackStyles: { [key: string]: NativeStackNavigationOptions } = {
-  global: {
-    headerStyle: { backgroundColor: COLORS.offWhite },
-    headerTintColor: COLORS.primary,
-    headerTitleStyle: { color: COLORS.dark },
-    headerBackTitleVisible: false,
-    headerLargeTitle: true,
-    headerLargeTitleShadowVisible: false,
-    headerLargeStyle: { backgroundColor: COLORS.offWhite },
-    headerLargeTitleStyle: { color: COLORS.dark },
-  },
-  characterList: {
-    title: 'Characters',
-  },
-};
