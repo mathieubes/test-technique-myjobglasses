@@ -44,6 +44,7 @@ export const CharacterListScreen: React.FC<
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
 
   const onEndReached = useCallback(() => {
+    if (!data?.characters.info.next) return;
     fetchMore({
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult.characters || !prev.characters) return data!;
