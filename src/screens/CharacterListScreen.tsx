@@ -1,5 +1,11 @@
 import { useQuery } from '@apollo/client';
-import { View, FlatList, Text, Modal } from 'react-native';
+import {
+  View,
+  FlatList,
+  Text,
+  Modal,
+  KeyboardAvoidingView,
+} from 'react-native';
 import { GET_CHARACTERS } from '../queries/character.graphql';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ICharactersQuery } from '../models/queries/characters-query.model';
@@ -18,7 +24,7 @@ export const CharacterListScreen: React.FC<
   NativeStackScreenProps<CharacterStackParamList, 'CharacterList'>
 > = ({ navigation }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const snapPoints = useMemo(() => ['20%', '40%'], []);
 
   const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
 
@@ -52,7 +58,10 @@ export const CharacterListScreen: React.FC<
   }, []);
 
   return (
-    <View style={{ backgroundColor: COLORS.offWhite }}>
+    <KeyboardAvoidingView
+      style={{ backgroundColor: COLORS.offWhite }}
+      behavior="position"
+    >
       <FlatList
         data={data?.characters.results}
         renderItem={({ item }) => (
@@ -77,6 +86,6 @@ export const CharacterListScreen: React.FC<
           <CharacterListFilterModal />
         </BottomSheet>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
