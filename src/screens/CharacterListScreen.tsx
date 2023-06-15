@@ -1,22 +1,33 @@
 import { useQuery } from '@apollo/client';
-import { View, FlatList, Text } from 'react-native';
+import { View, FlatList, Text, Modal } from 'react-native';
 import { GET_CHARACTERS } from '../queries/character.graphql';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { ICharactersQuery } from '../models/queries/characters-query.model';
 import { CharacterListItem } from '../components/character-list-screen/CharacterListItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { CharacterStackParamList } from '../../App';
 import { ICharacter } from '../models/character.model';
 import { COLORS } from '../constants/colors';
+import { FiltersButton } from '../components/FiltersButton';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { CharacterListFilterModal } from './CharacterListFilterModal';
 
 const INITIAL_CHARACTERS_PAGE = 1;
 
 export const CharacterListScreen: React.FC<
   NativeStackScreenProps<CharacterStackParamList, 'CharacterList'>
 > = ({ navigation }) => {
-  const { data, fetchMore } = useQuery<ICharactersQuery>(GET_CHARACTERS, {
-    variables: { page: INITIAL_CHARACTERS_PAGE },
-  });
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['25%', '50%'], []);
+
+  const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
+
+  const { data, fetchMore, refetch } = useQuery<ICharactersQuery>(
+    GET_CHARACTERS,
+    {
+      variables: { page: INITIAL_CHARACTERS_PAGE },
+    }
+  );
 
   const onEndReached = useCallback(() => {
     fetchMore({
@@ -54,6 +65,18 @@ export const CharacterListScreen: React.FC<
         onEndReachedThreshold={1}
         onEndReached={onEndReached}
       />
+      <FiltersButton onPress={() => setBottomSheetOpen(true)} />
+
+      {isBottomSheetOpen && (
+        <BottomSheet
+          ref={bottomSheetRef}
+          snapPoints={snapPoints}
+          onChange={(index) => index === -1 && setBottomSheetOpen(false)}
+          enablePanDownToClose
+        >
+          <CharacterListFilterModal />
+        </BottomSheet>
+      )}
     </View>
   );
 };

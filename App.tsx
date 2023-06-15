@@ -9,6 +9,11 @@ import {
 import { CharacterDetailScreen } from './src/screens/CharacterDetailScreen';
 import { ICharacter } from './src/models/character.model';
 import { COLORS } from './src/constants/colors';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  FilterContext,
+  FilterContextProvider,
+} from './src/contexts/FilterContext';
 
 export type CharacterStackParamList = {
   CharacterList: undefined;
@@ -19,24 +24,33 @@ const CharacterStack = createNativeStackNavigator<CharacterStackParamList>();
 
 export const App = () => {
   return (
-    <ApiProvider>
-      <NavigationContainer>
-        <CharacterStack.Navigator screenOptions={characterStackStyles.global}>
-          <CharacterStack.Screen
-            name="CharacterList"
-            component={CharacterListScreen}
-            options={characterStackStyles.characterList}
-          />
-          <CharacterStack.Screen
-            name="CharacterDetail"
-            component={CharacterDetailScreen}
-            options={({ route }) => ({ title: route.params.character.name })}
-          />
-        </CharacterStack.Navigator>
-      </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ApiProvider>
+        <FilterContextProvider>
+          <NavigationContainer>
+            <CharacterStack.Navigator
+              screenOptions={characterStackStyles.global}
+            >
+              <CharacterStack.Screen
+                name="CharacterList"
+                component={CharacterListScreen}
+                options={characterStackStyles.characterList}
+              />
 
-      <StatusBar style="auto" />
-    </ApiProvider>
+              <CharacterStack.Screen
+                name="CharacterDetail"
+                component={CharacterDetailScreen}
+                options={({ route }) => ({
+                  title: route.params.character.name,
+                })}
+              />
+            </CharacterStack.Navigator>
+          </NavigationContainer>
+        </FilterContextProvider>
+
+        <StatusBar style="auto" />
+      </ApiProvider>
+    </GestureHandlerRootView>
   );
 };
 

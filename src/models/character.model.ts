@@ -1,6 +1,6 @@
 import { IEpisode } from './episode.model';
 
-type CharacterStatus = 'Alive' | 'Dead' | 'unknown';
+export type CharacterStatus = 'Alive' | 'Dead' | 'unknown';
 export type CharacterGender = 'Female' | 'Male' | 'Genderless' | 'unknown';
 
 interface ILocation {
