@@ -74,7 +74,7 @@ export const CharacterDetailScreen: React.FC<
               style={styles.screen__moreInfos__row__phone}
             />
             <Text style={styles.screen__moreInfos__row__text}>
-              {generateRandomPhoneNumberForRick()}
+              {generateRandomPhoneNumberForRick()} 😉
             </Text>
           </View>
         )}

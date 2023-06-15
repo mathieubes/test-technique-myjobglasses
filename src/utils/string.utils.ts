@@ -8,5 +8,5 @@ export function generateRandomPhoneNumberForRick() {
     phoneNumber += segment + ' ';
   }
 
-  return phoneNumber.trim() + ' 😉';
+  return phoneNumber.trim();
 }
