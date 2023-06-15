@@ -5,9 +5,11 @@ import {
   Text,
   Modal,
   KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
 } from 'react-native';
 import { GET_CHARACTERS } from '../queries/character.graphql';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { ICharactersQuery } from '../models/queries/characters-query.model';
 import { CharacterListItem } from '../components/character-list-screen/CharacterListItem';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -17,23 +19,32 @@ import { COLORS } from '../constants/colors';
 import { FiltersButton } from '../components/FiltersButton';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { CharacterListFilterModal } from './CharacterListFilterModal';
+import { FilterContext } from '../contexts/FilterContext';
+import { Badge } from '../components/badges/Badge';
+import { Button } from '../components/Button';
 
 const INITIAL_CHARACTERS_PAGE = 1;
 
 export const CharacterListScreen: React.FC<
   NativeStackScreenProps<CharacterStackParamList, 'CharacterList'>
 > = ({ navigation }) => {
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['20%', '40%'], []);
-
-  const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
-
+  const { nameFilter, genderFilter, statusFilter } = useContext(FilterContext);
   const { data, fetchMore, refetch } = useQuery<ICharactersQuery>(
     GET_CHARACTERS,
     {
-      variables: { page: INITIAL_CHARACTERS_PAGE },
+      variables: {
+        page: INITIAL_CHARACTERS_PAGE,
+        name: nameFilter,
+        gender: genderFilter,
+        status: statusFilter,
+      },
     }
   );
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['40%'], []);
+
+  const [isBottomSheetOpen, setBottomSheetOpen] = useState(false);
 
   const onEndReached = useCallback(() => {
     fetchMore({
@@ -59,10 +70,11 @@ export const CharacterListScreen: React.FC<
 
   return (
     <KeyboardAvoidingView
-      style={{ backgroundColor: COLORS.offWhite }}
+      style={{ flex: 1, backgroundColor: COLORS.offWhite }}
       behavior="position"
     >
       <FlatList
+        style={{ height: '100%' }}
         data={data?.characters.results}
         renderItem={({ item }) => (
           <CharacterListItem
@@ -76,16 +88,38 @@ export const CharacterListScreen: React.FC<
       />
       <FiltersButton onPress={() => setBottomSheetOpen(true)} />
 
-      {isBottomSheetOpen && (
-        <BottomSheet
-          ref={bottomSheetRef}
-          snapPoints={snapPoints}
-          onChange={(index) => index === -1 && setBottomSheetOpen(false)}
-          enablePanDownToClose
-        >
-          <CharacterListFilterModal />
-        </BottomSheet>
-      )}
+      {isBottomSheetOpen &&
+        (Platform.OS !== 'web' ? (
+          <BottomSheet
+            ref={bottomSheetRef}
+            snapPoints={snapPoints}
+            onChange={(index) => index === -1 && setBottomSheetOpen(false)}
+            enablePanDownToClose
+          >
+            <CharacterListFilterModal />
+          </BottomSheet>
+        ) : (
+          <Modal style={styles.modal}>
+            <CharacterListFilterModal />
+
+            <Button
+              style={styles.modal__done}
+              iconName="checkmark"
+              text="Done"
+              onPress={() => setBottomSheetOpen(false)}
+            />
+          </Modal>
+        ))}
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    backgroundColor: `${COLORS.offWhite}aa`,
+  },
+  modal__done: {
+    margin: 16,
+    marginBottom: 32,
+  },
+});
