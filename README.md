@@ -1,3 +1,9 @@
+# React Native app using Expo
+
+If you have some troubles try to globally install expo
+
+App developped in Node v18.16.0
+
 ## Installation
 
 `npm install`
